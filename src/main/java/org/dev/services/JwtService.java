@@ -3,10 +3,8 @@ package org.dev.services;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.Value;
-import org.dev.entities.Token;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;

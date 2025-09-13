@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,14 +19,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+    private UUID userId;
 
     private String name;
 
     private String password;
 
     @OneToOne
-    private Token token;
+    private RefreshToken token;
 
     @ManyToMany
     @JoinTable(
