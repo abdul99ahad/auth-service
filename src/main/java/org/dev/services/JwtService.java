@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Service
 public class JwtService {
 
     @Value("${security.jwt.secret-key}") // TODO:
@@ -25,10 +27,6 @@ public class JwtService {
 
     private SecretKey getSingingKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    }
-
-    private String extractUsername(String token) {
-        return extractClaim(token, (Claims::getSubject));
     }
 
     private Date extractExpiration(String token) {
@@ -59,6 +57,10 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSingingKey())
                 .compact();
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, (Claims::getSubject));
     }
 
     public String generateToken(UserDetails userDetails) {
