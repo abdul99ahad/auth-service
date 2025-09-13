@@ -9,16 +9,33 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByName(username)
-                .orElseThrow(() ->  new UsernameNotFoundException("User not found"));
-
+        User user = userRepository.findByName(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
         return new CustomUserDetails(user);
+    }
+
+    public Boolean checkIfUsernameExists(String username) {
+        return userRepository.findByName(username) != null;
+    }
+
+    public User signUp(User user) {
+        if(checkIfUsernameExists(user.getName())) {
+            // TODO: add some sort of exception here!
+            return null;
+        }
+        // Password encoder
+        user.setUserId(UUID.randomUUID());
+        return userRepository.save(user);
     }
 }
