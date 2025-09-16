@@ -16,13 +16,15 @@ import java.util.Date;
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id")
     private Long id;
 
     private String token;
 
+    @Column(name = "expiry_date")
     private Date expiryDate;
 
     @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "user_id")
+    @JoinColumn(name = "token_id", referencedColumnName = "user_id")
     private User user;
 }

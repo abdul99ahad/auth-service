@@ -24,20 +24,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(user, passwordEncoder);
     }
 
     public Boolean checkIfUsernameExists(String username) {
         return userRepository.findByName(username) != null;
     }
 
-    public User signUp(User user) {
-        if(checkIfUsernameExists(user.getName())) {
-            // TODO: add some sort of exception here!
-            return null;
-        }
-        // Password encoder
-        user.setUserId(UUID.randomUUID());
-        return userRepository.save(user);
-    }
+//    public User signUp(User user) {
+//        if(checkIfUsernameExists(user.getName())) {
+//            // TODO: add some sort of exception here!
+//            return null;
+//        }
+//        // Password encoder
+//        user.setUserId(UUID.randomUUID());
+//        return userRepository.save(user);
+//    }
 }

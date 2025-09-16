@@ -17,8 +17,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${security.jwt.secret-key}") // TODO:
-    private final String SECRET_KEY = "my secret key";
+    private final String SECRET_KEY = "my secret key"; // TODO
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);

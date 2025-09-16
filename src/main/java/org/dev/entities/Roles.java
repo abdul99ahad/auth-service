@@ -12,7 +12,10 @@ public class Roles {
 
     @Id
     @GeneratedValue
+    @Column(name = "role_id")
     private long roleId;
+
+    @Column(name = "role_name")
     private String roleName;
 
     @ManyToMany
