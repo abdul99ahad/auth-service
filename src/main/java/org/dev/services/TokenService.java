@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.dev.entities.RefreshToken;
 import org.dev.entities.User;
 import org.dev.request.LoginRequestDTO;
+import org.dev.request.SignupRequestDTO;
 import org.dev.response.LoginResponseDTO;
+import org.dev.response.SignUpResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +25,7 @@ public class TokenService {
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
 
+        // TODO: check if we even need a User in here.
         // Convert loginRequestDTO to User
         User user = User.builder()
                 .name(loginRequestDTO.getUsername())
@@ -38,5 +44,28 @@ public class TokenService {
 
         return new LoginResponseDTO(accessToken, refreshToken.getToken());
 
+    }
+
+    @Transactional
+    public SignUpResponseDTO signup(SignupRequestDTO signupRequestDTO) {
+        Boolean userExists = customUserDetailsService.checkIfUsernameExists(signupRequestDTO.getUsername());
+
+        if (userExists) {
+            throw new RuntimeException("Username already exists");
+        }
+        User user = User.builder()
+                .userId(UUID.randomUUID().toString())
+                .name(signupRequestDTO.getUsername())
+                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
+                .build();
+
+        User savedUser = customUserDetailsService.signUp(user);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(signupRequestDTO.getUsername());
+        // generateToken
+        String accessToken = jwtService.generateToken(userDetails);
+        RefreshToken refreshToken = refreshTokenService.generateRefreshToken(user.getName());
+
+        return new SignUpResponseDTO(accessToken, refreshToken.getToken());
     }
 }

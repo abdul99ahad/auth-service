@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY = "my secret key"; // TODO
+    private final String SECRET_KEY = "SpringBootSecretKey2025-Secure-GENERATED-KEY"; // TODO
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);

@@ -40,4 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 //        user.setUserId(UUID.randomUUID());
 //        return userRepository.save(user);
 //    }
+    public User signUp(User user) {
+        return userRepository.save(user);
+    }
 }
