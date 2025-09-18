@@ -3,6 +3,7 @@ package org.dev.services;
 import lombok.RequiredArgsConstructor;
 import org.dev.entities.RefreshToken;
 import org.dev.entities.User;
+import org.dev.exceptions.InvalidRefreshTokenException;
 import org.dev.repositories.RefreshTokenRepository;
 import org.dev.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class RefreshTokenService {
 
         return tokenRepository.findByTokenAndActiveTrue(token)
                 .filter(this::isRefreshTokenValid)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new InvalidRefreshTokenException("Refresh token not found"));
 
     }
 

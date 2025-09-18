@@ -3,6 +3,8 @@ package org.dev.services;
 import lombok.RequiredArgsConstructor;
 import org.dev.entities.RefreshToken;
 import org.dev.entities.User;
+import org.dev.exceptions.InvalidCredentialsException;
+import org.dev.exceptions.UserAlreadyExistsException;
 import org.dev.request.LoginRequestDTO;
 import org.dev.request.RefreshTokenRequestDTO;
 import org.dev.request.SignupRequestDTO;
@@ -37,7 +39,7 @@ public class TokenService {
         Boolean userExists = customUserDetailsService.checkIfUsernameExists(user.getName());
 
         if (!userExists || customUserDetailsService.checkIfPasswordsMatch(loginRequestDTO.getUsername(), passwordEncoder.encode(loginRequestDTO.getPassword()))) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
         // pass this User to CustomUserDetails
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequestDTO.getUsername());
@@ -54,7 +56,7 @@ public class TokenService {
         Boolean userExists = customUserDetailsService.checkIfUsernameExists(signupRequestDTO.getUsername());
 
         if (userExists) {
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistsException("Username already exists");
         }
         User user = User.builder()
                 .userId(UUID.randomUUID().toString())
