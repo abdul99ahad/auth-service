@@ -26,6 +26,7 @@ public class TokenService {
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
 
         // TODO: check if we even need a User in here.
+        // TODO: handle via authentication manager
         // Convert loginRequestDTO to User
         User user = User.builder()
                 .name(loginRequestDTO.getUsername())
@@ -33,7 +34,7 @@ public class TokenService {
         // Check if this user already exists
         Boolean userExists = customUserDetailsService.checkIfUsernameExists(user.getName());
 
-        if ( !userExists || !passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
+        if (!userExists || customUserDetailsService.checkIfPasswordsMatch(loginRequestDTO.getUsername(), passwordEncoder.encode(loginRequestDTO.getPassword()))) {
             throw new RuntimeException("Invalid credentials");
         }
         // pass this User to CustomUserDetails

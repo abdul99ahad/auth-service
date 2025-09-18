@@ -31,15 +31,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.findByName(username) != null;
     }
 
-//    public User signUp(User user) {
-//        if(checkIfUsernameExists(user.getName())) {
-//            // TODO: add some sort of exception here!
-//            return null;
-//        }
-//        // Password encoder
-//        user.setUserId(UUID.randomUUID());
-//        return userRepository.save(user);
-//    }
+    public Boolean checkIfPasswordsMatch(String username, String password) {
+        User user = userRepository.findByName(username);
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
     public User signUp(User user) {
         return userRepository.save(user);
     }
