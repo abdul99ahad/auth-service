@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.dev.entities.RefreshToken;
 import org.dev.entities.User;
 import org.dev.request.LoginRequestDTO;
+import org.dev.request.RefreshTokenRequestDTO;
 import org.dev.request.SignupRequestDTO;
 import org.dev.response.LoginResponseDTO;
+import org.dev.response.RefreshTokenResponseDTO;
 import org.dev.response.SignUpResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,5 +70,16 @@ public class TokenService {
         RefreshToken refreshToken = refreshTokenService.generateRefreshToken(user.getName());
 
         return new SignUpResponseDTO(accessToken, refreshToken.getToken());
+    }
+
+    public RefreshTokenResponseDTO getJwtToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        RefreshToken refreshToken = refreshTokenService
+                .getActiveRefreshToken(refreshTokenRequestDTO.getRefreshToken());
+
+        // Duplicate TODO
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(refreshToken.getUser().getName());
+        String accessToken = jwtService.generateToken(userDetails);
+
+        return new RefreshTokenResponseDTO(accessToken);
     }
 }

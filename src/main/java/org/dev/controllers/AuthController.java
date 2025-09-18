@@ -2,8 +2,10 @@ package org.dev.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.dev.request.LoginRequestDTO;
+import org.dev.request.RefreshTokenRequestDTO;
 import org.dev.request.SignupRequestDTO;
 import org.dev.response.LoginResponseDTO;
+import org.dev.response.RefreshTokenResponseDTO;
 import org.dev.response.SignUpResponseDTO;
 import org.dev.services.TokenService;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +29,11 @@ public class AuthController {
     public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
         return ResponseEntity.ok(tokenService.signup(signupRequestDTO));
     }
+
+    @PostMapping("auth/v1/refresh_token")
+    public ResponseEntity<RefreshTokenResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        return ResponseEntity.ok(tokenService.getJwtToken(refreshTokenRequestDTO));
+    }
+
+
 }

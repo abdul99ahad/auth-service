@@ -24,7 +24,10 @@ public class RefreshToken {
     @Column(name = "expiry_date")
     private Date expiryDate;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    private Boolean active;
+
 }
