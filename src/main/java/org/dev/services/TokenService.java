@@ -1,6 +1,7 @@
 package org.dev.services;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.dev.entities.RefreshToken;
 import org.dev.entities.User;
 import org.dev.exceptions.InvalidCredentialsException;
@@ -11,6 +12,7 @@ import org.dev.request.SignupRequestDTO;
 import org.dev.response.LoginResponseDTO;
 import org.dev.response.RefreshTokenResponseDTO;
 import org.dev.response.SignUpResponseDTO;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class TokenService {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final KafkaTemplate<Integer, User> kafkaTemplate;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
 
@@ -71,6 +74,8 @@ public class TokenService {
         String accessToken = jwtService.generateToken(userDetails);
         RefreshToken refreshToken = refreshTokenService.generateRefreshToken(user.getName());
 
+        // send to kafka
+        sendToKafka("signup", user);
         return new SignUpResponseDTO(accessToken, refreshToken.getToken());
     }
 
@@ -83,5 +88,10 @@ public class TokenService {
         String accessToken = jwtService.generateToken(userDetails);
 
         return new RefreshTokenResponseDTO(accessToken);
+    }
+
+    private void sendToKafka(String topic, User user) {
+        ProducerRecord<Integer, User> userProducer = new ProducerRecord<>(topic, user);
+        kafkaTemplate.send(userProducer);
     }
 }
